@@ -5,6 +5,37 @@ import sys
 from game import Person
 import random
 
+"""
+def save_in_file():
+"""
+#def battle_options(options):
+
+def battle_ground(character, enemy, levels):
+    counter_levels = 1
+
+    print(character[0], character[1])
+    print(enemy)
+
+    print("select your option")
+    options = input("insert (a) for attack | insert (s) to save | insert (exit) to quit without save game: ")
+    if options.lower() == 'a':
+        attack = character[0][1] + character[1][1]
+        enemy[0] = enemy[0] - attack
+        if enemy[0] <= 0:
+            enemy[0] = 0
+            counter_levels += 1
+            if counter_levels <= levels:
+                print("Stage: ", counter_levels)
+                enemy_spotted(counter_levels)
+        print("enemy actual: ", enemy)
+
+    if options.lower() == 's':
+        print("save game")
+    if options.lower() == "exit":
+        print("exit")
+    if options not in ('a', 's', "exit"):
+        print(options, "Invalid input, insert (a) for attack, (s) for save, (exit) to exit without saving")
+
 
 def character_selection(characters):
 
@@ -13,7 +44,9 @@ def character_selection(characters):
     play_character1 = game_characters.get(characters[0])
     play_character2 = game_characters.get(characters[1])
 
-    return [play_character1.hp, play_character2.hp]
+    selected_characters = {"character1": [play_character1.hp, play_character1.dmg],
+                           "character2": [play_character2.hp, play_character2.dmg]}
+    return [selected_characters.get("character1"), selected_characters.get("character2")]
 
 
 def enemy_spotted(level):
@@ -33,9 +66,7 @@ def enemy_spotted(level):
         return enemies
     if level >= 3:
         random_number = random.randint(0, 3)
-        print("los malosos")
         return [enemies[random_number].hp, enemies[random_number].dmg]
-
 
 
 def type_players():
@@ -52,10 +83,12 @@ def type_players():
 
 
 def main():
+    k = range(1, 10, 1)
+
     try:
         if len(sys.argv) == 3:
-            if (sys.argv[1] == "-s") and (sys.argv[2] == "5"):
-                print("Partida 2 jugadores con 5 niveles")
+            if (sys.argv[1] == "-s") and (int(sys.argv[2]) in k):
+                print("Partida 2 jugadores con " + sys.argv[2] + " niveles")
                 print(type_players())
 
                 char_election_1 = int(input('selec first character: '))
@@ -63,10 +96,10 @@ def main():
 
                 characters = [char_election_1, char_election_2]
 
-                print(characters[0], characters[1])
-                print(character_selection(characters))
+                selected_enemy = enemy_spotted(int(sys.argv[2]))
+                selected_chars = character_selection(characters)
 
-                print(enemy_spotted(5))
+                battle_ground(selected_chars, selected_enemy, int(sys.argv[2]))
 
             if (sys.argv[1] == "-f") and (sys.argv[2] == "saved"):
                 print(sys.argv[2] + " Nombre fichero incorrecto")
@@ -85,6 +118,11 @@ def main():
         print("fatal error")
     except KeyboardInterrupt:
         print("Exit program")
+       # save_game = input("Do you want to save game (y/n): ")
+       # if save_game == 'y' or save_game=='s':
+        #    save_in_file()
+        #else:
+         #   print('')
 
 
 if __name__ == '__main__':
